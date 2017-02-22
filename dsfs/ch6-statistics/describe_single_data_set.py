@@ -3,8 +3,12 @@ import matplotlib
 # Force matplotlib to not use any Xwindows backend.
 matplotlib.use('Agg')
 import random
+import math
 from collections import Counter
 from matplotlib import pyplot as plt
+import sys 
+sys.path.append('../ch5-linear')
+import vector_h 
 
 # 产生数据集
 num_friends = [random.randint(1,100) for _ in range(100)]
@@ -86,3 +90,53 @@ def mode(x):
 
 print "Mode:"
 print mode(num_friends) 
+
+# 极差
+def data_range(x):
+    return max(x) - min(x)
+
+frineds_range = data_range(num_friends)
+print "Data range: %d" %frineds_range
+
+# 方差
+def de_mean(x):
+    x_bar = mean(x)
+    return [x_i - x_bar for x_i in x]
+
+def sum_of_squarse(x):
+    return sum([x_i * x_i for x_i in x])
+
+def variance(x):
+    n = len(x)
+    deviations = de_mean(x)
+    return sum_of_squarse(deviations) / (n - 1)
+
+data_variance = variance(num_friends) 
+print "Variance: %d" %data_variance
+
+# 标准差
+def standard_deviation(x):
+    return math.sqrt(variance(x))
+
+data_standard_deviation = standard_deviation(num_friends)
+print "Standard deviation: %d" %data_standard_deviation
+
+# 75% 分位数和 25% 分位数之差
+def interquartile_range(x):
+    return quantile(x, 0.75) - quantile(x, 0.25)
+
+interquartile_range = interquartile_range(num_friends)
+print "Interquartile range: %d" %interquartile_range
+
+# 5.2 相关
+# 产生每日在线时长数据集
+daily_minutes = [random.randint(1,60) for _ in range(100)]
+
+# 协方差
+def covariance(x, y):
+    n = len(x)
+    return vector_h.dot(de_mean(x), de_mean(y)) / (n - 1)
+
+covariance = covariance(num_friends, daily_minutes)
+print "Covariance: %d" %covariance
+
