@@ -1,4 +1,5 @@
 #encoding:utf-8
+from __future__ import division  
 import matplotlib
 # Force matplotlib to not use any Xwindows backend.
 matplotlib.use('Agg')
@@ -137,6 +138,29 @@ def covariance(x, y):
     n = len(x)
     return vector_h.dot(de_mean(x), de_mean(y)) / (n - 1)
 
-covariance = covariance(num_friends, daily_minutes)
-print "Covariance: %d" %covariance
+data_covariance = covariance(num_friends, daily_minutes)
+print "Covariance: %d" %data_covariance
 
+# 相关（探查线性相关度，-1 至 1）
+def correlation(x, y):
+    stdev_x = standard_deviation(x)
+    stdev_y = standard_deviation(y)
+    if stdev_x > 0 and stdev_y > 0:
+        return covariance(x, y) / stdev_x / stdev_y
+    else:
+        return 0
+
+data_correlation = correlation(num_friends, daily_minutes)
+print "Correlation: %f" %data_correlation
+
+# 排除异常值（假设异常值为第 100 位）
+outlier = num_friends.index(100)
+num_friends_good = [x
+    for i, x in enumerate(num_friends)
+    if i != outlier]
+daily_minutes_good = [x
+    for i, x in enumerate(daily_minutes)
+    if i != outlier]
+
+data_correlation = correlation(num_friends_good, daily_minutes_good)
+print "Correlation good: %f" %data_correlation
